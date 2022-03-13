@@ -1,0 +1,145 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * ACedraz
+ *
+ * @category  ACedraz
+ * @package   CustomerImport
+ * @version   1.0.1
+ * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">acedraz_customerimport_profile_listing.acedraz_customerimport_profile_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <spinner>acedraz_customerimport_profile_columns</spinner>
+        <deps>
+            <dep>acedraz_customerimport_profile_listing.acedraz_customerimport_profile_listing_data_source</dep>
+        </deps>
+        <buttons>
+            <button name="add">
+                <label>Create Profile</label>
+                <class>primary</class>
+                <url path="*/*/edit"/>
+            </button>
+        </buttons>
+    </settings>
+    <listingToolbar name="listing_top">
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="templates" xsi:type="array">
+                        <item name="filters" xsi:type="array">
+                            <item name="select" xsi:type="array">
+                                <item name="component" xsi:type="string">Magento_Ui/js/form/element/ui-select</item>
+                                <item name="template" xsi:type="string">ui/grid/filters/elements/ui-select</item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </filters>
+        <paging name="listing_paging">
+            <settings>
+                <options>
+                    <option name="50" xsi:type="array">
+                        <item name="value" xsi:type="number">50</item>
+                        <item name="label" xsi:type="string">50</item>
+                    </option>
+                    <option name="100" xsi:type="array">
+                        <item name="value" xsi:type="number">100</item>
+                        <item name="label" xsi:type="string">100</item>
+                    </option>
+                    <option name="200" xsi:type="array">
+                        <item name="value" xsi:type="number">200</item>
+                        <item name="label" xsi:type="string">200</item>
+                    </option>
+                </options>
+                <pageSize>50</pageSize>
+            </settings>
+        </paging>
+    </listingToolbar>
+    <dataSource component="Magento_Ui/js/grid/provider" name="acedraz_customerimport_profile_listing_data_source">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">entity_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>acedraz_customerimport::profile</aclResource>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="acedraz_customerimport_profile_listing_data_source">
+            <settings>
+                <requestFieldName>entity_id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <columns name="acedraz_customerimport_profile_columns">
+        <settings>
+            <childDefaults>
+                <param name="fieldAction" xsi:type="array">
+                    <item name="provider" xsi:type="string">acedraz_customerimport_profile_listing.acedraz_customerimport_profile_listing.acedraz_customerimport_profile_columns.actions</item>
+                    <item name="target" xsi:type="string">applyAction</item>
+                    <item name="params" xsi:type="array">
+                        <item name="0" xsi:type="string">${ $.$data.rowIndex }</item>
+                        <item name="1" xsi:type="boolean">true</item>
+                    </item>
+                </param>
+            </childDefaults>
+        </settings>
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>entity_id</indexField>
+                <preserveSelectionsOnFilter>true</preserveSelectionsOnFilter>
+            </settings>
+        </selectionsColumn>
+        <column name="entity_id" sortOrder="10">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>desc</sorting>
+            </settings>
+        </column>
+        <column name="enable" component="Magento_Ui/js/grid/columns/select" sortOrder="20">
+            <settings>
+                <options class="ACedraz\CustomerImport\Model\Config\Source\Status"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Status</label>
+            </settings>
+        </column>
+        <column name="name" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Name</label>
+            </settings>
+        </column>
+        <column name="created_at" sortOrder="90">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Created At</label>
+            </settings>
+        </column>
+        <column name="updated_at" sortOrder="100">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Updated At</label>
+            </settings>
+        </column>
+        <actionsColumn class="ACedraz\CustomerImport\Ui\Component\Listing\Column\Profile\Actions" name="actions" sortOrder="110">
+            <settings>
+                <indexField>entity_id</indexField>
+                <resizeEnabled>false</resizeEnabled>
+                <resizeDefaultWidth>107</resizeDefaultWidth>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

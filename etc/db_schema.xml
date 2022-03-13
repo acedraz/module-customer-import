@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * ACedraz
+ *
+ * @category  ACedraz
+ * @package   CustomerImport
+ * @version   1.0.1
+ * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="customer_import_profile" resource="default" engine="innodb" comment="Profile Table">
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
+        <column xsi:type="boolean" name="enable" nullable="true" comment="Enable Profile" default="1"/>
+        <column xsi:type="varchar" name="name" nullable="false" comment="Profile Name" length="255"/>
+        <column xsi:type="datetime" name="created_at" nullable="true" comment="Created At" default="CURRENT_TIMESTAMP"/>
+        <column xsi:type="datetime" name="updated_at" nullable="true" comment="Updated At" default="CURRENT_TIMESTAMP" on_update="true"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+            <column name="name"/>
+        </constraint>
+    </table>
+</schema>

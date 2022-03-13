@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ACedraz
+ *
+ * @category  ACedraz
+ * @package   CustomerImport
+ * @version   1.0.0
+ * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="ACedraz_CustomerImport::profile_map"
+             title="Profile Map"
+             module="ACedraz_CustomerImport"
+             sortOrder="99"
+             action="customerimport/profile/index"
+             parent="Magento_Backend::system_convert"
+             resource="ACedraz_CustomerImport::profile_map"/>
+    </menu>
+</config>
