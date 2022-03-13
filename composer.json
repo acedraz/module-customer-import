@@ -1,0 +1,20 @@
+{
+  "name": "acedraz/module-customer-import",
+  "description": "Magento 2 Customer Import",
+  "require": {
+    "php": "^7.4.0"
+  },
+  "type": "magento2-module",
+  "version": "1.0.0",
+  "license": [
+    "Commercial"
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "ACedraz\\CustomerImport\\": ""
+    }
+  }
+}

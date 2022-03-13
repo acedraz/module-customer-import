@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ACedraz
+ *
+ * @category  ACedraz
+ * @package   CustomerImport
+ * @version   1.0.0
+ * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="ACedraz_CustomerImport" />
+</config>
