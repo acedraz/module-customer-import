@@ -9,8 +9,8 @@ Magento 2 module for customer import using file and profile
 Add in 'repositories' of composer.json (magento 2 project):
 
      "repositories": {
-        "aislan-movie-catalog": {
-            "url": "https://github.com/acedraz/m2-movie-catalog.git",
+        "acedraz-customer-import": {
+            "url": "https://github.com/acedraz/module-customer-import.git",
             "type": "git"
         }
      }
