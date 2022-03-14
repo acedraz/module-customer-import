@@ -5,7 +5,7 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.1
+ * @version   1.0.2
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 -->
@@ -19,7 +19,25 @@
         <column xsi:type="datetime" name="updated_at" nullable="true" comment="Updated At" default="CURRENT_TIMESTAMP" on_update="true"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="CUSTOMER_IMPORT_PROFILE_NAME">
             <column name="name"/>
+        </constraint>
+    </table>
+    <table name="customer_import_profile_map" resource="default" engine="innodb" comment="Profile Map Table">
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
+        <column name="profile_id" nullable="false" xsi:type="int" comment="customer_import_profile ID" identity="false"/>
+        <column name="column" nullable="false" xsi:type="varchar" length="255" comment="Column in profile file "/>
+        <column name="attribute" nullable="false" xsi:type="varchar" length="255" comment="Customer Attribute"/>
+        <column name="created_at" nullable="true" xsi:type="datetime" comment="created_at"/>
+        <column name="updated_at" nullable="true" xsi:type="datetime" comment="updated_at"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="CUSTOMER_IMPORT_PROFILE_MAP_PROFILE_ID_COLUMN_ATTRIBUTE">
+            <column name="profile_id"/>
+            <column name="column"/>
+            <column name="attribute"/>
         </constraint>
     </table>
 </schema>

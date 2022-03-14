@@ -70,7 +70,7 @@ class Actions extends Column
                             ),
                             'label' => __('Delete'),
                             'confirm' => [
-                                'title' => __('Delete "${ $.$data.title }"'),
+                                'title' => __('Delete Profile '. $item['name']),
                                 'message' => __('Are you sure you want to delete this profile?'),
                             ],
                         ],

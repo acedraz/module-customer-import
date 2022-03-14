@@ -28,6 +28,9 @@ interface ProfileInterface
     const NAME = 'name';
 
     /** @var string */
+    const MAP = 'map';
+
+    /** @var string */
     const UPDATED_AT = 'updated_at';
 
     /** @var string */
@@ -84,4 +87,17 @@ interface ProfileInterface
      * @return \ACedraz\CustomerImport\Api\Data\ProfileInterface
      */
     public function setEnable($enable);
+
+    /**
+     * Get map
+     * @return \ACedraz\CustomerImport\Api\Data\ProfileMapInterface[]|null
+     */
+    public function getMap();
+
+    /**
+     * Set map
+     * @param \ACedraz\CustomerImport\Api\Data\ProfileMapInterface[] $map
+     * @return \ACedraz\CustomerImport\Api\Data\ProfileInterface
+     */
+    public function setMap(array $map);
 }

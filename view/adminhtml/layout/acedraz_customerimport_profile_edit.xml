@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ACedraz
+ *
+ * @category  ACedraz
+ * @package   CustomerImport
+ * @version   1.0.2
+ * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <uiComponent name="acedraz_customerimport_profile_form"/>
+        </referenceContainer>
+    </body>
+</page>

@@ -5,16 +5,22 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.1
+ * @version   1.0.2
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="ACedraz\CustomerImport\Api\ProfileRepositoryInterface"
                 type="ACedraz\CustomerImport\Model\ProfileRepository"/>
+    <preference for="ACedraz\CustomerImport\Api\ProfileMapRepositoryInterface"
+                type="ACedraz\CustomerImport\Model\ProfileMapRepository"/>
     <preference for="ACedraz\CustomerImport\Api\Data\ProfileInterface"
                 type="ACedraz\CustomerImport\Model\Data\Profile"/>
+    <preference for="ACedraz\CustomerImport\Api\Data\ProfileMapInterface"
+                type="ACedraz\CustomerImport\Model\Data\ProfileMap"/>
     <preference for="ACedraz\CustomerImport\Api\Data\ProfileSearchResultsInterface"
+                type="Magento\Framework\Api\SearchResults"/>
+    <preference for="ACedraz\CustomerImport\Api\Data\ProfileMapSearchResultsInterface"
                 type="Magento\Framework\Api\SearchResults"/>
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
@@ -29,4 +35,17 @@
             <argument name="resourceModel" xsi:type="string">ACedraz\CustomerImport\Model\ResourceModel\Profile\Collection</argument>
         </arguments>
     </virtualType>
+    <type name="ACedraz\CustomerImport\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="ACedraz\CustomerImport\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">customerImport</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">ACedraz\CustomerImport\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

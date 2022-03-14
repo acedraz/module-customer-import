@@ -92,4 +92,20 @@ class Profile extends AbstractModel implements ProfileInterface
     {
         return $this->setData(self::ENABLE, $enable);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMap()
+    {
+        return $this->getData(self::MAP);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setMap(array $map)
+    {
+        return $this->setData(self::MAP, $map);
+    }
 }

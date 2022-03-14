@@ -5,7 +5,7 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.1
+ * @version   1.0.2
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 -->
@@ -31,6 +31,21 @@
     <listingToolbar name="listing_top">
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
+        <massaction name="listing_massaction">
+            <action name="delete">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">delete</item>
+                        <item name="label" xsi:type="string" translate="true">Delete</item>
+                        <item name="url" xsi:type="url" path="customerimport/profile/massDelete"/>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Delete profiles</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure you want to delete this profiles?</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+        </massaction>
         <filters name="listing_filters">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
