@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ACedraz
+ *
+ * @category  ACedraz
+ * @package   CustomerImport
+ * @version   1.0.4
+ * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="acedraz" translate="label" sortOrder="999999" class="bringit-tab bringit-tab-container">
+            <label>ACedraz Extensions</label>
+        </tab>
+        <section id="customerimport" translate="label" type="text" sortOrder="-5000" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Customer Import</label>
+            <tab>acedraz</tab>
+            <resource>ACedraz_CustomerImport::config</resource>
+            <group id="Upload" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>File Upload</label>
+                <field id="file" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>File Upload</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
+                    <upload_dir config="system">customerimport</upload_dir>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
