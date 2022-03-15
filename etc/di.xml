@@ -5,7 +5,7 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.2
+ * @version   1.0.5
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 -->
@@ -22,6 +22,8 @@
                 type="Magento\Framework\Api\SearchResults"/>
     <preference for="ACedraz\CustomerImport\Api\Data\ProfileMapSearchResultsInterface"
                 type="Magento\Framework\Api\SearchResults"/>
+    <preference for="ACedraz\CustomerImport\Api\CustomerImportInterface"
+                type="ACedraz\CustomerImport\Model\CustomerImport"/>
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">
@@ -45,6 +47,13 @@
             <argument name="name" xsi:type="string">customerImport</argument>
             <argument name="handlers"  xsi:type="array">
                 <item name="system" xsi:type="object">ACedraz\CustomerImport\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="customer_import" xsi:type="object">ACedraz\CustomerImport\Console\Command\CustomerImport</item>
             </argument>
         </arguments>
     </type>
