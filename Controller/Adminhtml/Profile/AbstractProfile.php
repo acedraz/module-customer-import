@@ -12,18 +12,16 @@ declare(strict_types=1);
 
 namespace ACedraz\CustomerImport\Controller\Adminhtml\Profile;
 
-use Magento\Backend\App\Action;
 use Magento\Backend\Model\View\Result\Page;
-use Magento\Framework\App\Action\HttpGetActionInterface;
 
 /**
  * Class AbstractProfile
  * @package ACedraz\CustomerImport\Controller\Adminhtml\Profile
  */
-abstract class AbstractProfile extends Action implements HttpGetActionInterface
+abstract class AbstractProfile extends \Magento\ImportExport\Controller\Adminhtml\Export\Index
 {
     /** @var string */
-    const ADMIN_RESOURCE = 'ACedraz_CustomerImport::customerimport';
+    const ADMIN_RESOURCE = 'ACedraz_CustomerImport::profile_map';
 
     /**
      * Init page.
@@ -36,5 +34,13 @@ abstract class AbstractProfile extends Action implements HttpGetActionInterface
             ->addBreadcrumb(__('Profile Map'), __('Profile Map'))
             ->addBreadcrumb(__('Profile'), __('Profile'));
         return $resultPage;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed(): bool
+    {
+        return $this->_authorization->isAllowed(self::ADMIN_RESOURCE);
     }
 }

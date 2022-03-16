@@ -18,6 +18,18 @@ namespace ACedraz\CustomerImport\Api;
  */
 interface CustomerImportInterface
 {
+    /** @var string */
+    const JSON_TYPE = 'json';
+
+    /** @var string */
+    const CSV_TYPE = 'csv';
+
+    /** @var string */
+    const DIR = 'customerimport';
+
+    /** @var string */
+    const DEFAULT_GROUP_ID = 1;
+
     /**
      * @return \ACedraz\CustomerImport\Api\Data\ProfileInterface[]
      */
@@ -41,4 +53,12 @@ interface CustomerImportInterface
      * @return string
      */
     public function getFilePath(string $name): string;
+
+    /**
+     * @param string $name
+     * @return array|string|string[]
+     */
+    public function getFileType(string $name);
+
+    public function getFileData(string $profileName, string $fileName);
 }

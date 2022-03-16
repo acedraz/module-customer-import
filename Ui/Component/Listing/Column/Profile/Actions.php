@@ -25,10 +25,10 @@ class Actions extends Column
 {
 
     /** @var string */
-    const URL_PATH_DELETE = 'customerimport/profile/delete';
+    const URL_PATH_DELETE = 'acedraz_customerimport/profile/delete';
 
     /** @var string */
-    const URL_PATH_EDIT = 'customerimport/profile/edit';
+    const URL_PATH_EDIT = 'acedraz_customerimport/profile/edit';
 
     /**
      * @param ContextInterface $context
@@ -65,7 +65,7 @@ class Actions extends Column
                             'href' => $this->urlBuilder->getUrl(
                                 static::URL_PATH_DELETE,
                                 [
-                                    'id' => $item['entity_id'],
+                                    'id' => $item['entity_id']
                                 ]
                             ),
                             'label' => __('Delete'),
@@ -74,11 +74,11 @@ class Actions extends Column
                                 'message' => __('Are you sure you want to delete this profile?'),
                             ],
                         ],
-                        'view' => [
+                        'edit' => [
                             'href' => $this->urlBuilder->getUrl(
                                 static::URL_PATH_EDIT,
                                 [
-                                    'id' => $item['entity_id'],
+                                    'id' => $item['entity_id']
                                 ]
                             ),
                             'label' => __('Edit'),

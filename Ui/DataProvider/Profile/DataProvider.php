@@ -43,7 +43,7 @@ class DataProvider extends AbstractDataProvider
     private ProfileMapInterfaceFactory $profileMapFactory;
 
     /**
-     * @param $name
+     * @param string $name
      * @param $primaryFieldName
      * @param $requestFieldName
      * @param CollectionFactory $collectionFactory
@@ -54,12 +54,13 @@ class DataProvider extends AbstractDataProvider
      * @param array $data
      */
     public function __construct(
-        $name, $primaryFieldName,
-        $requestFieldName,
         CollectionFactory $collectionFactory,
         ProfileMapRepository $profileMapRepository,
         SearchCriteriaBuilder $_searchCriteriaBuilder,
         ProfileMapInterfaceFactory $profileMapFactory,
+        string $name,
+        string $primaryFieldName,
+        string $requestFieldName,
         array $meta = [],
         array $data = []
     ) {

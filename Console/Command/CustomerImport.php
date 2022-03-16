@@ -129,6 +129,7 @@ class CustomerImport extends Command
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return Cli::RETURN_FAILURE;
         }
+        $data = $this->customerImport->getFileData($input->getArgument(self::PROFILE_NAME), $input->getArgument(self::FILE_NAME));
         return Cli::RETURN_SUCCESS;
     }
 

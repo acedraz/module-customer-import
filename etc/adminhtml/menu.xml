@@ -16,7 +16,7 @@
              title="Profile Map"
              module="ACedraz_CustomerImport"
              sortOrder="99"
-             action="customerimport/profile/index"
+             action="acedraz_customerimport/profile/index"
              parent="Magento_Backend::system_convert"
              resource="ACedraz_CustomerImport::profile_map"/>
     </menu>

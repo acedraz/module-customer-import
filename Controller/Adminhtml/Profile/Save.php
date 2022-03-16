@@ -17,8 +17,8 @@ use ACedraz\CustomerImport\Api\Data\ProfileInterfaceFactory;
 use ACedraz\CustomerImport\Api\Data\ProfileMapInterface;
 use ACedraz\CustomerImport\Api\Data\ProfileMapInterfaceFactory;
 use ACedraz\CustomerImport\Api\ProfileRepositoryInterface;
-use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\LocalizedException;
 use ACedraz\CustomerImport\Logger\Logger;
@@ -27,7 +27,7 @@ use ACedraz\CustomerImport\Logger\Logger;
  * Class Save
  * @package ACedraz\CustomerImport\Controller\Adminhtml\Profile
  */
-class Save extends Action
+class Save extends AbstractProfile implements HttpPostActionInterface
 {
     /** @var string */
     const DATA_PERSISTOR_KEY = 'acedraz_customerimport_profile_entity';
@@ -67,8 +67,8 @@ class Save extends Action
         $this->dataPersistor = $dataPersistor;
         $this->profileRepository = $profileRepository;
         $this->profileFactory = $profileFactory;
-        parent::__construct($context);
         $this->profileMapFactory = $profileMapFactory;
+        parent::__construct($context);
     }
 
     /**

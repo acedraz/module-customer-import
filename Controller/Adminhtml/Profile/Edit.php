@@ -15,6 +15,7 @@ namespace ACedraz\CustomerImport\Controller\Adminhtml\Profile;
 use ACedraz\CustomerImport\Api\Data\ProfileInterfaceFactory;
 use ACedraz\CustomerImport\Api\ProfileRepositoryInterface;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
@@ -24,7 +25,7 @@ use Magento\Framework\View\Result\Page;
  * Class Edit
  * @package ACedraz\CustomerImport\Controller\Adminhtml\Profile
  */
-class Edit extends AbstractProfile
+class Edit extends AbstractProfile implements HttpGetActionInterface
 {
     /** @var ProfileRepositoryInterface */
     private ProfileRepositoryInterface $profileRepository;
@@ -71,7 +72,7 @@ class Edit extends AbstractProfile
             $profile->getId() ? __('Edit Profile') : __('New Profile'),
             $profile->getId() ? __('Edit Profile') : __('New Profile')
         );
-        $resultPage->getConfig()->getTitle()->set(
+        $resultPage->getConfig()->getTitle()->prepend(
             $profile->getId() ? __('Edit Profile') : __('Create Profile')
         );
         return $resultPage;

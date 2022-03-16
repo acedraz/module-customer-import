@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace ACedraz\CustomerImport\Controller\Adminhtml\Profile;
 
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Controller\ResultInterface;
 
@@ -20,7 +21,7 @@ use Magento\Framework\Controller\ResultInterface;
  * Class Index
  * @package ACedraz\CustomerImport\Controller\Adminhtml\Profile
  */
-class Index extends AbstractProfile
+class Index extends AbstractProfile implements HttpGetActionInterface
 {
     /** @var PageFactory */
     protected PageFactory $resultPageFactory;
