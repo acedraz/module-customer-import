@@ -4,7 +4,7 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.5
+ * @version   1.0.8
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 
@@ -217,6 +217,16 @@ class CustomerImport implements CustomerImportInterface
         $import = $this->getModelImport();
         $import->setSource($sourceCsv);
         $import->importData();
+        $this->deleteFile($filePath);
+    }
+
+    /**
+     * @param string $filePath
+     * @return void
+     */
+    public function deleteFile(string $filePath)
+    {
+        unlink($filePath);
     }
 
     /**
