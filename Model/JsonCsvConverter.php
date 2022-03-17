@@ -108,7 +108,7 @@ class JsonCsvConverter implements JsonCsvConverterInterface
             case self::CSV_TYPE;
                 return $this->csvToJson($content);
             default;
-                return $content;
+                return $this->_json->serialize($content);
         }
     }
 
