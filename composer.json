@@ -2,11 +2,10 @@
   "name": "acedraz/module-customer-import",
   "description": "Magento 2 Customer Import",
   "require": {
-    "php": "^7.4.0",
-
+    "php": "^7.4.0"
   },
   "type": "magento2-module",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "license": [
     "Commercial"
   ],
