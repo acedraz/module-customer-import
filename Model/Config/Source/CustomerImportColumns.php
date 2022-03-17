@@ -4,7 +4,7 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.2
+ * @version   1.0.6
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 
@@ -251,46 +251,60 @@ class CustomerImportColumns implements OptionSourceInterface
     /**
      * @var string[]
      */
-    protected array $_columns = [
-        self::ADDRESS_DEFAULT_SHIPPING_VALUE => self::ADDRESS_DEFAULT_SHIPPING,
-        self::ADDRESS_DEFAULT_BILLING_VALUE => self::ADDRESS_DEFAULT_BILLING,
-        self::ADDRESS_VAT_ID_VALUE => self::ADDRESS_VAT_ID,
-        self::ADDRESS_TELEPHONE_VALUE => self::ADDRESS_TELEPHONE,
-        self::ADDRESS_SUFFIX_VALUE => self::ADDRESS_SUFFIX,
-        self::ADDRESS_STREET_VALUE => self::ADDRESS_STREET,
-        self::ADDRESS_REGION_VALUE => self::ADDRESS_REGION,
+    protected array $_address = [
+        self::ADDRESS_CITY_VALUE => self::ADDRESS_CITY,
+        self::ADDRESS_COMPANY_VALUE => self::ADDRESS_COMPANY,
+        self::ADDRESS_COUNTRY_ID_VALUE => self::ADDRESS_COUNTRY_ID,
+        self::ADDRESS_FAX_VALUE => self::ADDRESS_FAX,
+        self::ADDRESS_FIRSTNAME_VALUE => self::ADDRESS_FIRSTNAME,
+        self::ADDRESS_LASTNAME_VALUE => self::ADDRESS_LASTNAME,
+        self::ADDRESS_MIDDLENAME_VALUE => self::ADDRESS_MIDDLENAME,
         self::ADDRESS_POSTCODE_VALUE => self::ADDRESS_POSTCODE,
         self::ADDRESS_PREFIX_VALUE => self::ADDRESS_PREFIX,
-        self::ADDRESS_MIDDLENAME_VALUE => self::ADDRESS_MIDDLENAME,
-        self::ADDRESS_LASTNAME_VALUE => self::ADDRESS_LASTNAME,
-        self::ADDRESS_FIRSTNAME_VALUE => self::ADDRESS_FIRSTNAME,
-        self::ADDRESS_FAX_VALUE => self::ADDRESS_FAX,
-        self::ADDRESS_COUNTRY_ID_VALUE => self::ADDRESS_COUNTRY_ID,
-        self::ADDRESS_COMPANY_VALUE => self::ADDRESS_COMPANY,
-        self::ADDRESS_CITY_VALUE => self::ADDRESS_CITY,
-        self::PASSWORD_VALUE => self::PASSWORD,
-        self::WEBSITE_ID_VALUE => self::WEBSITE_ID,
-        self::TAXVAT_VALUE => self::TAXVAT,
-        self::SUFFIX_VALUE => self::SUFFIX,
-        self::STORE_ID_VALUE => self::STORE_ID,
-        self::RP_TOKEN_CREATED_AT_VALUE => self::RP_TOKEN_CREATED_AT,
-        self::RP_TOKEN_VALUE => self::RP_TOKEN,
-        self::PREFIX_VALUE => self::PREFIX,
-        self::PASSWORD_HASH_VALUE => self::PASSWORD_HASH,
-        self::MIDDLENAME_VALUE => self::MIDDLENAME,
-        self::LASTNAME_VALUE => self::LASTNAME,
-        self::GROUP_ID_VALUE => self::GROUP_ID,
-        self::GENDER_VALUE => self::GENDER,
-        self::FIRSTNAME_VALUE => self::FIRSTNAME,
-        self::DOB_VALUE => self::DOB,
-        self::DISABLE_AUTO_GROUP_CHANGE_VALUE => self::DISABLE_AUTO_GROUP_CHANGE,
-        self::CREATED_IN_VALUE => self::CREATED_IN,
+        self::ADDRESS_REGION_VALUE => self::ADDRESS_REGION,
+        self::ADDRESS_STREET_VALUE => self::ADDRESS_STREET,
+        self::ADDRESS_SUFFIX_VALUE => self::ADDRESS_SUFFIX,
+        self::ADDRESS_TELEPHONE_VALUE => self::ADDRESS_TELEPHONE,
+        self::ADDRESS_VAT_ID_VALUE => self::ADDRESS_VAT_ID,
+        self::ADDRESS_DEFAULT_BILLING_VALUE => self::ADDRESS_DEFAULT_BILLING,
+        self::ADDRESS_DEFAULT_SHIPPING_VALUE => self::ADDRESS_DEFAULT_SHIPPING
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected array $_customer = [
         self::EMAIL_VALUE => self::EMAIL,
         self::WEBSITE_VALUE => self::WEBSITE,
         self::STORE_VALUE => self::STORE,
         self::CONFIRMATION_VALUE => self::CONFIRMATION,
-        self::CREATED_AT_VALUE => self::CREATED_AT
+        self::CREATED_AT_VALUE => self::CREATED_AT,
+        self::CREATED_IN_VALUE => self::CREATED_IN,
+        self::DISABLE_AUTO_GROUP_CHANGE_VALUE => self::DISABLE_AUTO_GROUP_CHANGE,
+        self::DOB_VALUE => self::DOB,
+        self::FIRSTNAME_VALUE => self::FIRSTNAME,
+        self::GENDER_VALUE => self::GENDER,
+        self::GROUP_ID_VALUE => self::GROUP_ID,
+        self::LASTNAME_VALUE => self::LASTNAME,
+        self::MIDDLENAME_VALUE => self::MIDDLENAME,
+        self::PASSWORD_HASH_VALUE => self::PASSWORD_HASH,
+        self::PREFIX_VALUE => self::PREFIX,
+        self::RP_TOKEN_VALUE => self::RP_TOKEN,
+        self::RP_TOKEN_CREATED_AT_VALUE => self::RP_TOKEN_CREATED_AT,
+        self::STORE_ID_VALUE => self::STORE_ID,
+        self::SUFFIX_VALUE => self::SUFFIX,
+        self::TAXVAT_VALUE => self::TAXVAT,
+        self::WEBSITE_ID_VALUE => self::WEBSITE_ID,
+        self::PASSWORD_VALUE => self::PASSWORD,
     ];
+
+    /**
+     * @return array
+     */
+    public function getCustomerComposite(): array
+    {
+        return array_merge($this->getCustomerOptions(), $this->getAddressOptions());
+    }
 
     /**
      * @return array
@@ -298,10 +312,26 @@ class CustomerImportColumns implements OptionSourceInterface
     public function toOptionArray(): array
     {
         $options = [];
-        foreach ($this->_columns as $code => $label) {
+        foreach ($this->getCustomerComposite() as $code => $label) {
             $options[] = ['value' => $code, 'label' => $label];
         }
         return $options;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCustomerOptions(): array
+    {
+        return $this->_customer;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAddressOptions(): array
+    {
+        return $this->_address;
     }
 
 }

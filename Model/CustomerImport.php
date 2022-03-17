@@ -15,14 +15,21 @@ namespace ACedraz\CustomerImport\Model;
 use ACedraz\CustomerImport\Api\CustomerImportInterface;
 use ACedraz\CustomerImport\Api\Data\ProfileInterface;
 use ACedraz\CustomerImport\Api\Data\ProfileMapInterface;
+use ACedraz\CustomerImport\Api\IndexerInterface;
+use ACedraz\CustomerImport\Api\JsonCsvConverterInterface;
 use ACedraz\CustomerImport\Api\ProfileMapRepositoryInterface;
 use ACedraz\CustomerImport\Api\ProfileRepositoryInterface;
+use ACedraz\CustomerImport\Api\SystemInterface;
 use ACedraz\CustomerImport\Model\Config\Source\CustomerImportColumns;
+use Magento\CustomerImportExport\Model\Import\Address;
+use Magento\CustomerImportExport\Model\Import\Customer;
+use Magento\CustomerImportExport\Model\Import\CustomerComposite;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\File\Csv;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\ImportExport\Model\Import\Source\CsvFactory;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -32,6 +39,9 @@ use Magento\Store\Model\StoreManagerInterface;
  */
 class CustomerImport implements CustomerImportInterface
 {
+    /** @var null|string  */
+    private $entityTypeCode = null;
+
     /** @var SearchCriteriaBuilder */
     private SearchCriteriaBuilder $_searchCriteriaBuilder;
 
@@ -56,9 +66,41 @@ class CustomerImport implements CustomerImportInterface
     /** @var StoreManagerInterface */
     private StoreManagerInterface $_storeManager;
 
+    /** @var JsonCsvConverterInterface */
+    private JsonCsvConverterInterface $jsonCsvConverter;
+
+    /** @var Json */
+    private Json $_json;
+
+    /** @var CustomerImportColumns */
+    private CustomerImportColumns $customerImportColumns;
+
+    /** @var Customer */
+    private Customer $_customerImport;
+
+    /** @var Address */
+    private Address $_addressImport;
+
+    /** @var CustomerComposite */
+    private CustomerComposite $_customerCompositeImport;
+
+    /** @var SystemInterface */
+    private SystemInterface $system;
+
+    /** @var IndexerInterface */
+    private IndexerInterface $indexer;
+
     /**
+     * @param IndexerInterface $indexer
+     * @param SystemInterface $system
+     * @param Customer $_customerImport
+     * @param Address $_addressImport
+     * @param CustomerComposite $_customerCompositeImport
+     * @param CustomerImportColumns $customerImportColumns
+     * @param JsonCsvConverterInterface $jsonCsvConverter
      * @param StoreManagerInterface $_storeManager
      * @param Csv $_csv
+     * @param Json $_json
      * @param CsvFactory $sourceCsvFactory
      * @param SearchCriteriaBuilder $_searchCriteriaBuilder
      * @param ProfileRepositoryInterface $profileRepository
@@ -67,8 +109,16 @@ class CustomerImport implements CustomerImportInterface
      * @param File $fileDriver
      */
     public function __construct(
+        IndexerInterface $indexer,
+        SystemInterface $system,
+        Customer $_customerImport,
+        Address $_addressImport,
+        CustomerComposite $_customerCompositeImport,
+        CustomerImportColumns $customerImportColumns,
+        JsonCsvConverterInterface $jsonCsvConverter,
         StoreManagerInterface $_storeManager,
         Csv $_csv,
+        Json $_json,
         CsvFactory $sourceCsvFactory,
         SearchCriteriaBuilder $_searchCriteriaBuilder,
         ProfileRepositoryInterface $profileRepository,
@@ -84,6 +134,14 @@ class CustomerImport implements CustomerImportInterface
         $this->_csv = $_csv;
         $this->profileMapRepository = $profileMapRepository;
         $this->_storeManager = $_storeManager;
+        $this->jsonCsvConverter = $jsonCsvConverter;
+        $this->_json = $_json;
+        $this->customerImportColumns = $customerImportColumns;
+        $this->_customerImport = $_customerImport;
+        $this->_addressImport = $_addressImport;
+        $this->_customerCompositeImport = $_customerCompositeImport;
+        $this->system = $system;
+        $this->indexer = $indexer;
     }
 
     /**
@@ -146,31 +204,77 @@ class CustomerImport implements CustomerImportInterface
     }
 
     /**
-     * @param string $name
-     * @return array|string|string[]
+     * @param string $profileName
+     * @param string $fileName
+     * @return void
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getFileType(string $name)
-    {
-        return pathinfo($this->getFilePath($name))['extension'];
-    }
-
     public function import(string $profileName, string $fileName)
     {
-
+        $filePath = $this->createTemporaryCsv($profileName, $fileName);
+        $sourceCsv = $this->createSourceCsvModel($filePath);
+        $import = $this->getModelImport();
+        $import->setSource($sourceCsv);
+        $import->importData();
     }
 
-    public function getFileData(string $profileName, string $fileName)
+    /**
+     * @return void
+     */
+    public function reindex()
     {
-        $type = $this->getFileType($fileName);
-        switch ($type) {
-            case self::JSON_TYPE;
-                break;
-            case self::CSV_TYPE;
-                $this->createTemporaryCsv($profileName, $fileName);
-                $sourceCsv = $this->createSourceCsvModel($fileName);
-                break;
+        $this->indexer->reindex('customer_grid');
+    }
+
+    /**
+     * @return array
+     */
+    public function createDataImport(): array
+    {
+        return [
+            'entity' => $this->entityTypeCode,
+            'behavior' => $this->getBehavior(),
+            'validation-stop-on-errors' => 'validation-stop-on-errors',
+            'allowed_error_count' => '10',
+            '_import_field_separator' => ',',
+            '_import_multiple_value_separator' => ',',
+            '_import_empty_attribute_value_constant' =>  '__EMPTY__VALUE__',
+            'import_images_file_dir' => ''
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getBehavior(): string
+    {
+        switch ($this->entityTypeCode) {
+            case $this->_customerImport->getEntityTypeCode();
+                return $this->system->getCustomerBehavior();
+            case $this->_addressImport->getEntityTypeCode();
+                return $this->system->getAddressBehavior();
+            case $this->_customerCompositeImport->getEntityTypeCode();
+                return $this->system->getCompositeBehavior();
             default;
-                break;
+                return '';
+        }
+    }
+
+    /**
+     * @return Address|Customer|CustomerComposite|null
+     */
+    public function getModelImport()
+    {
+        switch ($this->entityTypeCode) {
+            case $this->_customerImport->getEntityTypeCode();
+                return $this->_customerImport;
+            case $this->_addressImport->getEntityTypeCode();
+                return $this->_addressImport;
+            case $this->_customerCompositeImport->getEntityTypeCode();
+                return $this->_customerCompositeImport;
+            default;
+                return null;
         }
     }
 
@@ -178,15 +282,19 @@ class CustomerImport implements CustomerImportInterface
      * Create source CSV model
      *
      * @param string $sourceFile
+     * @param string|null $directory
      * @return \Magento\ImportExport\Model\Import\Source\Csv
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
-    protected function createSourceCsvModel(string $sourceFile)
+    protected function createSourceCsvModel(string $sourceFile, string $directory = null): \Magento\ImportExport\Model\Import\Source\Csv
     {
-        $sourceFile = self::DIR . DIRECTORY_SEPARATOR . $sourceFile;
+        if (!$directory) {
+            $directory = $this->_filesystem->getDirectoryWrite(DirectoryList::TMP);
+        }
         return $this->_sourceCsvFactory->create(
             [
                 'file' => $sourceFile,
-                'directory' => $this->_filesystem->getDirectoryWrite(DirectoryList::MEDIA)
+                'directory' => $directory
             ]
         );
     }
@@ -199,70 +307,69 @@ class CustomerImport implements CustomerImportInterface
      */
     private function createTemporaryCsv(string $profileName, string $fileName): string
     {
-        $data = $this->_csv->getData($this->getFilePath($fileName));
-        $data = $this->updateCsvHeader($data, $profileName);
-        $data = $this->checkAttribute($data, CustomerImportColumns::WEBSITE_VALUE, $this->_storeManager->getWebsite()->getCode());
-        $data = $this->checkAttribute($data, CustomerImportColumns::WEBSITE_ID_VALUE, $this->_storeManager->getWebsite()->getId());
-        $data = $this->checkAttribute($data, CustomerImportColumns::STORE_VALUE, $this->_storeManager->getStore()->getCode());
-        $data = $this->checkAttribute($data, CustomerImportColumns::STORE_ID_VALUE, $this->_storeManager->getStore()->getId());
-        $data = $this->checkAttribute($data, CustomerImportColumns::GROUP_ID_VALUE, self::DEFAULT_GROUP_ID);
-        $data = $this->checkAttribute($data, CustomerImportColumns::ADDRESS_CITY_VALUE, '');
-        $data = $this->checkAttribute($data, CustomerImportColumns::ADDRESS_COMPANY_VALUE, '');
-        $data = $this->checkAttribute($data, CustomerImportColumns::ADDRESS_COUNTRY_ID_VALUE, '');
-        $data = $this->checkAttribute($data, CustomerImportColumns::ADDRESS_STREET_VALUE, '');
-        $data = $this->checkAttribute($data, CustomerImportColumns::ADDRESS_TELEPHONE_VALUE, '');
+        $jsonTmp = [];
+        $data = $this->_json->unserialize($this->jsonCsvConverter->convertToJson($this->getFilePath($fileName)));
+        foreach ($data as $row => $values) {
+            foreach ($this->getOptionsByTypeCode($this->getEntityTypeCode($data, $profileName)) as $attribute => $label) {
+                $column = $this->getColumnByAttribute($attribute, $profileName);
+                if ($column) {
+                    $jsonTmp[$row][$attribute] = array_key_exists($column, $values) ? $values[$column] : $this->checkAttribute($attribute);
+                    continue;
+                }
+                $jsonTmp[$row][$attribute] = $this->checkAttribute($attribute);
+            }
+        }
+        $csvTmpData = $this->jsonCsvConverter->jsonToCsv($this->_json->serialize($jsonTmp));
         $directory = $this->_filesystem->getDirectoryWrite(
             DirectoryList::TMP
         );
         $tmpFilePath = $directory->getAbsolutePath() . $fileName;
-        $this->_csv->saveData($tmpFilePath, $data);
+        $this->_csv->saveData($tmpFilePath, $csvTmpData);
         return $tmpFilePath;
     }
 
     /**
-     * @param array $data
-     * @param string $profileName
-     * @return array
-     */
-    private function updateCsvHeader(array $data, string $profileName): array
-    {
-        foreach ($data as $row => &$datum) {
-            foreach ($datum as &$value) {
-                $value = $this->getAttribute($value, $profileName);
-            }
-            break;
-        }
-        return $data;
-    }
-
-    /**
-     * @param array $data
      * @param string $attribute
-     * @param $default
-     * @return array
+     * @return int|string
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    private function checkAttribute(array $data, string $attribute, $default): array
+    private function checkAttribute(string $attribute)
     {
-        foreach ($data as $row => &$datum) {
-            if (!$row && in_array($attribute, $datum)) {
-                break;
-            }
-            if (!$row) {
-                $datum[] = $attribute;
-            }
-            if ($row) {
-                $datum[] = $default;
-            }
+        switch ($attribute) {
+            case CustomerImportColumns::WEBSITE_VALUE;
+                return $this->_storeManager->getWebsite()->getCode();
+            case CustomerImportColumns::WEBSITE_ID_VALUE;
+                return $this->_storeManager->getWebsite()->getId();
+            case CustomerImportColumns::STORE_VALUE;
+                return $this->_storeManager->getStore()->getCode();
+            case CustomerImportColumns::STORE_ID_VALUE;
+                return $this->_storeManager->getStore()->getId();
+            case CustomerImportColumns::GROUP_ID_VALUE;
+                return self::DEFAULT_GROUP_ID;
+            case CustomerImportColumns::ADDRESS_COUNTRY_ID_VALUE:
+                return self::DEFAULT_ADDRESS_COUNTRY_ID;
+            case CustomerImportColumns::CREATED_IN_VALUE:
+                return $this->_storeManager->getDefaultStoreView()->getName();
+            case CustomerImportColumns::DISABLE_AUTO_GROUP_CHANGE_VALUE:
+                return self::DEFUALT_DISABLE_AUTO_GROUP_CHANGE;
+            case CustomerImportColumns::FIRSTNAME_VALUE:
+            case CustomerImportColumns::LASTNAME_VALUE:
+            case CustomerImportColumns::ADDRESS_STREET_VALUE:
+            case CustomerImportColumns::ADDRESS_TELEPHONE_VALUE:
+            case CustomerImportColumns::ADDRESS_CITY_VALUE;
+                return self::NEED_UPDATE;
+            default;
+                return '';
         }
-        return $data;
     }
 
     /**
      * @param string $column
      * @param string $profileName
-     * @return string
+     * @return string|null
      */
-    public function getAttribute(string $column, string $profileName): string
+    public function getAttributeByColumn(string $column, string $profileName): ?string
     {
         $profile = $this->profileRepository->getList(
             $this->_searchCriteriaBuilder
@@ -270,13 +377,99 @@ class CustomerImport implements CustomerImportInterface
                 ->addFilter(ProfileInterface::NAME, $profileName, 'eq')
                 ->create())
             ->getItems();
-        $profileId = current($profile)->getEntityId();
-        $profileMap = $this->profileMapRepository->getList(
+        if ($profile) {
+            $profileId = current($profile)->getEntityId();
+            $profileMap = $this->profileMapRepository->getList(
                 $this->_searchCriteriaBuilder
                     ->addFilter(ProfileMapInterface::COLUMN, $column, 'eq')
                     ->addFilter(ProfileMapInterface::PROFILE_ID, $profileId, 'eq')
                     ->create())
                 ->getItems();
-        return current($profileMap)->getAttribute();
+            if ($profileMap) {
+                return current($profileMap)->getAttribute();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param array $jsonContent
+     * @param string $profileName
+     * @return string|null
+     */
+    public function getEntityTypeCode(array $jsonContent, string $profileName): ?string
+    {
+        $typeCode = null;
+        $header = $this->jsonCsvConverter->getHeader($jsonContent);
+        foreach ($header as &$column) {
+            $column = $this->getAttributeByColumn($column, $profileName);
+        }
+        $customer = false;
+        $address = false;
+        foreach ($header as $attribute) {
+            if (in_array($attribute,array_keys($this->customerImportColumns->getCustomerOptions()))) {
+                $customer = true;
+            }
+            if (in_array($header,array_keys($this->customerImportColumns->getAddressOptions()))) {
+                $address = true;
+            }
+        }
+        if ($customer) {
+            $typeCode = $this->_customerImport->getEntityTypeCode();
+        }
+        if ($address) {
+            $typeCode = $this->_addressImport->getEntityTypeCode();
+        }
+        if ($address && $customer) {
+            $typeCode = $this->_customerCompositeImport->getEntityTypeCode();
+        }
+        $this->entityTypeCode = $typeCode;
+        return $typeCode;
+    }
+
+    /**
+     * @param string $typeCode
+     * @return array
+     */
+    public function getOptionsByTypeCode(string $typeCode): array
+    {
+        switch ($typeCode) {
+            case $this->_customerImport->getEntityTypeCode();
+                return $this->customerImportColumns->getCustomerOptions();
+            case $this->_addressImport->getEntityTypeCode();
+                return $this->customerImportColumns->getAddressOptions();
+            case $this->_customerCompositeImport->getEntityTypeCode();
+                return $this->customerImportColumns->getCustomerComposite();
+            default;
+                return [];
+        }
+    }
+
+    /**
+     * @param string $attribute
+     * @param string $profileName
+     * @return string|null
+     */
+    public function getColumnByAttribute(string $attribute, string $profileName): ?string
+    {
+        $profile = $this->profileRepository->getList(
+            $this->_searchCriteriaBuilder
+                ->addFilter(ProfileInterface::ENABLE, 1, 'eq')
+                ->addFilter(ProfileInterface::NAME, $profileName, 'eq')
+                ->create())
+            ->getItems();
+        if ($profile) {
+            $profileId = current($profile)->getEntityId();
+            $profileMap = $this->profileMapRepository->getList(
+                $this->_searchCriteriaBuilder
+                    ->addFilter(ProfileMapInterface::ATTRIBUTE, $attribute, 'eq')
+                    ->addFilter(ProfileMapInterface::PROFILE_ID, $profileId, 'eq')
+                    ->create())
+                ->getItems();
+            if ($profileMap) {
+                return current($profileMap)->getColumn();
+            }
+        }
+        return null;
     }
 }

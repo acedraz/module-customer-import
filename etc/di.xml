@@ -12,6 +12,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="ACedraz\CustomerImport\Api\ProfileRepositoryInterface"
                 type="ACedraz\CustomerImport\Model\ProfileRepository"/>
+    <preference for="ACedraz\CustomerImport\Api\JsonCsvConverterInterface"
+                type="ACedraz\CustomerImport\Model\JsonCsvConverter"/>
     <preference for="ACedraz\CustomerImport\Api\ProfileMapRepositoryInterface"
                 type="ACedraz\CustomerImport\Model\ProfileMapRepository"/>
     <preference for="ACedraz\CustomerImport\Api\Data\ProfileInterface"
@@ -24,6 +26,10 @@
                 type="Magento\Framework\Api\SearchResults"/>
     <preference for="ACedraz\CustomerImport\Api\CustomerImportInterface"
                 type="ACedraz\CustomerImport\Model\CustomerImport"/>
+    <preference for="ACedraz\CustomerImport\Api\SystemInterface"
+                type="ACedraz\CustomerImport\Model\System"/>
+    <preference for="ACedraz\CustomerImport\Api\IndexerInterface"
+                type="ACedraz\CustomerImport\Model\Indexer"/>
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">

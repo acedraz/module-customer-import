@@ -5,7 +5,7 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.4
+ * @version   1.0.6
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 -->
@@ -18,13 +18,37 @@
             <label>Customer Import</label>
             <tab>acedraz</tab>
             <resource>ACedraz_CustomerImport::config</resource>
-            <group id="Upload" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+            <group id="upload" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>File Upload</label>
                 <field id="file" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="10"
                        showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>File Upload</label>
                     <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
                     <upload_dir config="system">customerimport</upload_dir>
+                </field>
+            </group>
+            <group id="customer" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Customer</label>
+                <field id="import_behavior" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Import Behavior</label>
+                    <source_model>ACedraz\CustomerImport\Model\Config\Source\ImportBehavior</source_model>
+                </field>
+            </group>
+            <group id="address" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Address</label>
+                <field id="import_behavior" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Import Behavior</label>
+                    <source_model>ACedraz\CustomerImport\Model\Config\Source\ImportBehavior</source_model>
+                </field>
+            </group>
+            <group id="composite" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Composite</label>
+                <field id="import_behavior" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Import Behavior</label>
+                    <source_model>ACedraz\CustomerImport\Model\Config\Source\ImportBehaviorComposite</source_model>
                 </field>
             </group>
         </section>

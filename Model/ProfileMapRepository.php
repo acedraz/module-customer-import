@@ -69,7 +69,6 @@ class ProfileMapRepository implements ProfileMapRepositoryInterface
         ProfileMapSearchResultsInterfaceFactory $searchResultsFactory,
         CollectionProcessorInterface $collectionProcessor
     ) {
-
         $this->resource = $resource;
         $this->profileMapFactory = $profileMapFactory;
         $this->collectionFactory = $collectionFactory;

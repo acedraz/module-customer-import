@@ -4,7 +4,7 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.2
+ * @version   1.0.6
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 
@@ -104,8 +104,20 @@ class Save extends AbstractProfile implements HttpPostActionInterface
             if (!$data['entity_id']) {
                 unset($data['entity_id']);
             }
+
             $profile = $this->profileFactory->create();
             $profile = $this->updateData($profile, $data);
+            $validMaps = [];
+            foreach ($profile->getMap() as $map) {
+                if (in_array($map->getAttribute(), $validMaps)) {
+                    $this->messageManager->addErrorMessage(__('Only one mapping per attribute is allowed.'));
+                    if ($this->getRequest()->getParam('back')) {
+                        return $resultRedirect->setPath('*/*/edit', ['id' => $profile->getEntityId()]);
+                    }
+                    return $resultRedirect->setPath('*/*/');
+                }
+                $validMaps[] = $map->getAttribute();
+            }
             try {
                 $profile = $this->profileRepository->save($profile);
                 $this->messageManager->addSuccessMessage(__('You saved the profile.'));
@@ -124,7 +136,12 @@ class Save extends AbstractProfile implements HttpPostActionInterface
         return $resultRedirect->setPath('*/*/');
     }
 
-    public function updateData(ProfileInterface $profile,array $data)
+    /**
+     * @param ProfileInterface $profile
+     * @param array $data
+     * @return ProfileInterface
+     */
+    public function updateData(ProfileInterface $profile, array $data): ProfileInterface
     {
         $profile->setData($data);
         if (!$profile->getData('maps_container')) {

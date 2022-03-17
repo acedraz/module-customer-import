@@ -29,11 +29,7 @@ use Magento\Ui\Component\MassAction\Filter;
  */
 class MassDelete extends Action
 {
-    /**
-     * Mass action Filter
-     *
-     * @var \Magento\Ui\Component\MassAction\Filter
-     */
+    /** @var Filter */
     protected Filter $_filter;
 
     /** @var ProfileRepositoryInterface */

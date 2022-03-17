@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ACedraz
+ *
+ * @category  ACedraz
+ * @package   CustomerImport
+ * @version   1.0.6
+ * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <customerimport>
+            <customer>
+                <import_behavior>add_update</import_behavior>
+            </customer>
+            <address>
+                <import_behavior>add_update</import_behavior>
+            </address>
+            <composite>
+                <import_behavior>append</import_behavior>
+            </composite>
+        </customerimport>
+    </default>
+</config>

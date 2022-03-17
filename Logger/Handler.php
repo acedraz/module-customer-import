@@ -21,8 +21,10 @@ use Monolog\Logger;
  */
 class Handler extends Base
 {
-
+    /** @var string */
     const DIRECTORY_VAR_LOG = '/var/log/';
+
+    /** @var string */
     const FILE_NAME = 'acedraz_customerimport.log';
 
     /**

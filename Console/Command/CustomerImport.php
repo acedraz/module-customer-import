@@ -13,9 +13,6 @@ declare(strict_types=1);
 namespace ACedraz\CustomerImport\Console\Command;
 
 use ACedraz\CustomerImport\Api\CustomerImportInterface;
-use ACedraz\CustomerImport\Api\Data\ProfileInterface;
-use ACedraz\CustomerImport\Api\ProfileRepositoryInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Console\Cli;
@@ -25,7 +22,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBarFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
@@ -51,6 +47,7 @@ class CustomerImport extends Command
     private CustomerImportInterface $customerImport;
 
     /**
+     * @param CustomerImportInterface $customerImport
      * @param ProgressBarFactory $progressBarFactory
      * @param State $_state
      * @param string|null $name
@@ -67,6 +64,9 @@ class CustomerImport extends Command
         $this->customerImport = $customerImport;
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('customer:import')
@@ -129,7 +129,17 @@ class CustomerImport extends Command
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return Cli::RETURN_FAILURE;
         }
-        $data = $this->customerImport->getFileData($input->getArgument(self::PROFILE_NAME), $input->getArgument(self::FILE_NAME));
+        $output->writeln('<info>' . __('Import in progress') . '</info>');
+        try {
+            $this->customerImport->import($input->getArgument(self::PROFILE_NAME), $input->getArgument(self::FILE_NAME));
+        } catch (FileSystemException|LocalizedException $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            return Cli::RETURN_FAILURE;
+        }
+        $output->writeln('<info>' . __('Import successfully done') . '</info>');
+        $output->writeln('<info>' . __('Indexing customer grid in progress') . '</info>');
+        $this->customerImport->reindex();
+        $output->writeln('<info>' . __('Process finished') . '</info>');
         return Cli::RETURN_SUCCESS;
     }
 

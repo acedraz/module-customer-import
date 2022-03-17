@@ -19,16 +19,19 @@ namespace ACedraz\CustomerImport\Api;
 interface CustomerImportInterface
 {
     /** @var string */
-    const JSON_TYPE = 'json';
-
-    /** @var string */
-    const CSV_TYPE = 'csv';
+    const NEED_UPDATE = 'NEED UPDATE';
 
     /** @var string */
     const DIR = 'customerimport';
 
     /** @var string */
     const DEFAULT_GROUP_ID = 1;
+
+    /** @var string */
+    const DEFAULT_ADDRESS_COUNTRY_ID = 'US';
+
+    /** @var int */
+    const DEFUALT_DISABLE_AUTO_GROUP_CHANGE = 0;
 
     /**
      * @return \ACedraz\CustomerImport\Api\Data\ProfileInterface[]
@@ -55,10 +58,16 @@ interface CustomerImportInterface
     public function getFilePath(string $name): string;
 
     /**
-     * @param string $name
-     * @return array|string|string[]
+     * @param string $profileName
+     * @param string $fileName
+     * @return void
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getFileType(string $name);
+    public function import(string $profileName, string $fileName);
 
-    public function getFileData(string $profileName, string $fileName);
+    /**
+     * @return void
+     */
+    public function reindex();
 }
