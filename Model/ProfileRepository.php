@@ -4,7 +4,7 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.2
+ * @version   1.0.9
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 
@@ -230,6 +230,7 @@ class ProfileRepository implements ProfileRepositoryInterface
         try {
             $profileModel = $this->profileFactory->create();
             $this->resource->load($profileModel, $profile->getEntityId());
+            $profileModel->setMap($this->getMap($profileModel->getEntityId()));
             $this->resource->delete($profileModel);
             foreach ($profileModel->getMap() as $map) {
                 $this->profileMapRepository->delete($map);

@@ -79,6 +79,7 @@ class CustomerImport extends Command
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int|void
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function interact(InputInterface $input, OutputInterface $output)

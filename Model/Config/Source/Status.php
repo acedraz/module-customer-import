@@ -4,7 +4,7 @@
  *
  * @category  ACedraz
  * @package   CustomerImport
- * @version   1.0.1
+ * @version   1.0.9
  * @author    Aislan Cedraz <aislan.cedraz@gmail.com.br>
  */
 
@@ -27,7 +27,7 @@ class Status implements OptionSourceInterface
     const STATUS_ENABLE = 'enable';
 
     /** @var string */
-    const STATUS_DISABLE_VALUE = 2;
+    const STATUS_DISABLE_VALUE = 0;
 
     /** @var string */
     const STATUS_DISABLE = 'disable';
